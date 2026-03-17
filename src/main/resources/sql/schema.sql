@@ -1,0 +1,11 @@
+DROP DATABASE IF EXISTS exceptional_profiles;
+CREATE DATABASE exceptional_profiles;
+USE exceptional_profiles;
+
+DROP TABLE IF EXISTS profiles;
+
+CREATE TABLE IF NOT EXISTS profiles (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name  VARCHAR(100) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE
+    );

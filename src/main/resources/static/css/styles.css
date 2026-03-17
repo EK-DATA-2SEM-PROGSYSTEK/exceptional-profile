@@ -1,0 +1,90 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 2rem;
+    background: #f7f7f7;
+    color: #222;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 2rem;
+    border: 1px solid #ddd;
+}
+
+h1 {
+    margin-top: 0;
+}
+
+/* table layout */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 0.6rem;
+    text-align: left;
+}
+
+/* form layout */
+
+.field {
+    margin-bottom: 1rem;
+}
+
+.field label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: bold;
+}
+
+.field input {
+    width: 420px;
+    padding: 0.4rem;
+}
+
+/* action links */
+
+.actions a,
+.actions button {
+    margin-right: 10px;
+}
+
+/* button style */
+
+button,
+.button {
+    padding: 0.4rem 0.8rem;
+    border: 1px solid #444;
+    background: #eee;
+    color: #111;
+    text-decoration: none;
+    cursor: pointer;
+    font: inherit;
+}
+
+/* delete button as link */
+
+.link-button {
+    background: none;
+    border: none;
+    padding: 0;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* error box */
+
+.error-box {
+    border: 1px solid #b00020;
+    background: #ffe6ea;
+    color: #7a0015;
+    padding: 0.7rem;
+    margin-bottom: 1rem;
+}

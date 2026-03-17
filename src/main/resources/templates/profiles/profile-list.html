@@ -1,10 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Profiles</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
-$END$
+<div class="container">
+  <h1>Profiles</h1>
+
+  <p>
+    <a class="button" th:href="@{/exprofiles/new}">Create profile</a>
+  </p>
+
+  <table>
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${#lists.isEmpty(profiles)}">
+      <td colspan="4">No profiles found.</td>
+    </tr>
+    <tr th:each="profile : ${profiles}">
+      <td th:text="${profile.id}"></td>
+      <td th:text="${profile.name}"></td>
+      <td th:text="${profile.email}"></td>
+      <td class="actions">
+        <a th:href="@{/exprofiles/{id}/edit(id=${profile.id})}">Edit</a>
+
+        <form th:action="@{/exprofiles/{id}/delete(id=${profile.id})}" method="post">
+          <button type="submit" class="link-button">Delete</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
 </body>
 </html>

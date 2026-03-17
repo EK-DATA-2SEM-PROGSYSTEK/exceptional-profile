@@ -1,4 +1,8 @@
 package ek.ianb.exceptionalprofile.exception;
 
-public class DuplicateProfileException {
+public class DuplicateProfileException extends RuntimeException {
+
+    public DuplicateProfileException(String message) {
+        super(message);
+    }
 }
