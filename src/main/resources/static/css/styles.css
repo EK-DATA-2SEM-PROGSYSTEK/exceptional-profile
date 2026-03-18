@@ -60,6 +60,7 @@ th, td {
 
 button,
 .button {
+    display: inline-block;
     padding: 0.4rem 0.8rem;
     border: 1px solid #444;
     background: #eee;

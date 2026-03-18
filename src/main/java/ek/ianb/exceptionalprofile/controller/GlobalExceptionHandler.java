@@ -29,12 +29,12 @@ public class GlobalExceptionHandler {
         return "error/500";
     }
 
-//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//    @ExceptionHandler(Exception.class)
-//    public String handleUnexpected(Exception ex, Model model) {
-//        model.addAttribute("status", 500);
-//        model.addAttribute("error", "Internal Server Error");
-//        model.addAttribute("message", "Something went wrong.");
-//        return "error/500";
-//    }
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(Exception.class)
+    public String handleUnexpected(Exception ex, Model model) {
+        model.addAttribute("status", 500);
+        model.addAttribute("error", "Internal Server Error");
+        model.addAttribute("message", "Something went wrong.");
+        return "error/500";
+    }
 }
