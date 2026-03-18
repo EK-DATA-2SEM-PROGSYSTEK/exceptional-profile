@@ -12,9 +12,7 @@ import java.util.List;
 
 @Repository
 public class ProfileRepository {
-
     private final JdbcTemplate jdbcTemplate;
-
     private final RowMapper<Profile> profileRowMapper = (rs, rowNum) ->
             new Profile(
                     rs.getInt("id"),
@@ -46,7 +44,7 @@ public class ProfileRepository {
         if (results.isEmpty()) {
             return null;
         }
-        return results.get(0);
+        return results.getFirst();
     }
 
     public Profile insert(Profile profile) {
@@ -72,31 +70,29 @@ public class ProfileRepository {
         return new Profile(key.intValue(), profile.getName(), profile.getEmail());
     }
 
-    public void update(Profile profile) {
+    public boolean update(Profile profile) {
         String sql = """
-                UPDATE profiles
-                SET name = ?, email = ?
-                WHERE id = ?
-                """;
+            UPDATE profiles
+            SET name = ?, email = ?
+            WHERE id = ?
+            """;
 
-        int rowsUpdated = jdbcTemplate.update(sql,
+        int rowsUpdated = jdbcTemplate.update(
+                sql,
                 profile.getName(),
                 profile.getEmail(),
-                profile.getId());
+                profile.getId()
+        );
 
-        if (rowsUpdated == 0) {
-            throw new IllegalStateException("Update affected 0 rows.");
-        }
+        return rowsUpdated > 0;
     }
 
-    public void deleteById(int id) {
-        String sql = "DELETE FROM profiles WHERE id = ?";
-        jdbcTemplate.update(sql, id);
-    }
-
-    public boolean existsById(int id) {
-        String sql = "SELECT COUNT(*) FROM profiles WHERE id = ?";
-        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
-        return count != null && count > 0;
+    public boolean deleteById(int id) {
+        String sql = """
+            DELETE FROM profiles
+            WHERE id = ?
+            """;
+        int rowsDeleted = jdbcTemplate.update(sql, id);
+        return rowsDeleted > 0;
     }
 }

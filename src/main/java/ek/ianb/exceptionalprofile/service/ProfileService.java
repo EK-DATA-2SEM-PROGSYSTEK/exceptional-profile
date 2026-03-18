@@ -12,6 +12,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Service
 public class ProfileService {
@@ -33,22 +34,20 @@ public class ProfileService {
     public Profile findById(int id) {
         validateId(id);
 
+        Profile profile;
         try {
-            Profile profile = profileRepository.findById(id);
-            if (profile == null) {
-                throw new ProfileNotFoundException(id);
-            }
-            return profile;
-        } catch (ProfileNotFoundException ex) {
-            throw ex;
+            profile = profileRepository.findById(id);
         } catch (DataAccessException ex) {
             throw new DatabaseOperationException("Failed to retrieve profile.", ex);
         }
+        if (profile == null) {
+            throw new ProfileNotFoundException(id);
+        }
+        return profile;
     }
 
     public Profile create(Profile profile) {
-        validateForCreateOrUpdate(profile);
-
+        validateProfile(profile);
         try {
             return profileRepository.insert(profile);
         } catch (DataIntegrityViolationException ex) {
@@ -60,17 +59,13 @@ public class ProfileService {
 
     public void update(int id, Profile profile) {
         validateId(id);
-        validateForCreateOrUpdate(profile);
-
+        validateProfile(profile);
+        profile.setId(id);
         try {
-            if (!profileRepository.existsById(id)) {
+            boolean updated = profileRepository.update(profile);
+            if (!updated) {
                 throw new ProfileNotFoundException(id);
             }
-
-            profile.setId(id);
-            profileRepository.update(profile);
-        } catch (ProfileNotFoundException ex) {
-            throw ex;
         } catch (DataIntegrityViolationException ex) {
             throw new DuplicateProfileException("Name or email already exists.");
         } catch (DataAccessException ex) {
@@ -80,14 +75,11 @@ public class ProfileService {
 
     public void deleteById(int id) {
         validateId(id);
-
         try {
-            if (!profileRepository.existsById(id)) {
+            boolean deleted = profileRepository.deleteById(id);
+            if (!deleted) {
                 throw new ProfileNotFoundException(id);
             }
-            profileRepository.deleteById(id);
-        } catch (ProfileNotFoundException ex) {
-            throw ex;
         } catch (DataAccessException ex) {
             throw new DatabaseOperationException("Failed to delete profile.", ex);
         }
@@ -99,31 +91,33 @@ public class ProfileService {
         }
     }
 
-    private void validateForCreateOrUpdate(Profile profile) {
+    private void validateProfile(Profile profile) {
         if (profile == null) {
             throw new InvalidProfileException("Profile is required.");
         }
 
         String name = profile.getName();
-        String email = profile.getEmail();
-
         if (name == null || name.isBlank()) {
             throw new InvalidProfileException("Name is required.");
         }
-
         if (name.length() > 100) {
             throw new InvalidProfileException("Name must be at most 100 characters.");
         }
 
+        validateEmail(profile.getEmail());
+    }
+
+    private void validateEmail(String email){
         if (email == null || email.isBlank()) {
             throw new InvalidProfileException("Email is required.");
         }
-
         if (email.length() > 100) {
             throw new InvalidProfileException("Email must be at most 100 characters.");
         }
+        final Pattern EMAIL_PATTERN =
+                Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
 
-        if (!email.contains("@") || email.startsWith("@") || email.endsWith("@")) {
+        if (!EMAIL_PATTERN.matcher(email).matches()) {
             throw new InvalidProfileException("Email format is invalid.");
         }
     }
